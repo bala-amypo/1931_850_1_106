@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "sensors")
@@ -17,22 +19,39 @@ public class Sensor {
     @Column(nullable = false)
     private String sensorType;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
     @Column(nullable = false)
     private LocalDateTime installedAt;
 
     @Column(nullable = false)
     private Boolean isActive = true;
 
-    // No-arg constructor
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL)
+    private List<SensorReading> readings = new ArrayList<>();
+
     public Sensor() {
     }
 
-    // Parameterized constructor
-    public Sensor(String sensorCode, String sensorType, LocalDateTime installedAt, Boolean isActive) {
+    public Sensor(String sensorCode, String sensorType, Location location, LocalDateTime installedAt,
+            Boolean isActive) {
         this.sensorCode = sensorCode;
         this.sensorType = sensorType;
+        this.location = location;
         this.installedAt = installedAt;
-        this.isActive = isActive != null ? isActive : true;
+        this.isActive = isActive;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (installedAt == null) {
+            installedAt = LocalDateTime.now();
+        }
+        if (isActive == null) {
+            isActive = true;
+        }
     }
 
     // Getters and Setters
@@ -60,6 +79,14 @@ public class Sensor {
         this.sensorType = sensorType;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public LocalDateTime getInstalledAt() {
         return installedAt;
     }
@@ -74,5 +101,13 @@ public class Sensor {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public List<SensorReading> getReadings() {
+        return readings;
+    }
+
+    public void setReadings(List<SensorReading> readings) {
+        this.readings = readings;
     }
 }
