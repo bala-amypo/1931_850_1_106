@@ -6,29 +6,29 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+// REMOVED: import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-@Component
+// REMOVED: @Component
 public class JwtTokenProvider {
-
+    
     private final SecretKey secretKey;
     private final long expirationMillis;
-
+    
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expirationMillis) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMillis = expirationMillis;
     }
-
+    
     public String generateToken(Long userId, String email, String role) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + expirationMillis);
-
+        
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("email", email)
@@ -39,7 +39,7 @@ public class JwtTokenProvider {
                 .signWith(secretKey)
                 .compact();
     }
-
+    
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -55,7 +55,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
+    
     public Claims getClaims(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -63,15 +63,15 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
+    
     public String extractEmail(String token) {
         return getClaims(token).get("email", String.class);
     }
-
+    
     public Long extractUserId(String token) {
         return getClaims(token).get("userId", Long.class);
     }
-
+    
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
