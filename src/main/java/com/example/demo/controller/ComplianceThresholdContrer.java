@@ -14,27 +14,27 @@ import java.util.List;
 @RequestMapping("/api/thresholds")
 @Tag(name = "Compliance Thresholds", description = "Compliance threshold management endpoints")
 public class ComplianceThresholdController {
-
+    
     private final ComplianceThresholdService thresholdService;
-
+    
     public ComplianceThresholdController(ComplianceThresholdService thresholdService) {
         this.thresholdService = thresholdService;
     }
-
+    
     @PostMapping
     @Operation(summary = "Create a new threshold", description = "Add a new compliance threshold for a sensor type")
     public ResponseEntity<ComplianceThreshold> createThreshold(@RequestBody ComplianceThreshold threshold) {
         ComplianceThreshold savedThreshold = thresholdService.createThreshold(threshold);
         return ResponseEntity.ok(savedThreshold);
     }
-
+    
     @GetMapping
     @Operation(summary = "Get all thresholds", description = "Retrieve a list of all compliance thresholds")
     public ResponseEntity<List<ComplianceThreshold>> getAllThresholds() {
         List<ComplianceThreshold> thresholds = thresholdService.getAllThresholds();
         return ResponseEntity.ok(thresholds);
     }
-
+    
     @GetMapping("/{id}")
     @Operation(summary = "Get threshold by ID", description = "Retrieve a specific threshold by its ID")
     public ResponseEntity<ComplianceThreshold> getThreshold(
@@ -42,7 +42,7 @@ public class ComplianceThresholdController {
         ComplianceThreshold threshold = thresholdService.getThreshold(id);
         return ResponseEntity.ok(threshold);
     }
-
+    
     @GetMapping("/type/{sensorType}")
     @Operation(summary = "Get threshold by sensor type", description = "Retrieve threshold for a specific sensor type")
     public ResponseEntity<ComplianceThreshold> getThresholdBySensorType(

@@ -14,13 +14,13 @@ import java.util.List;
 @RequestMapping("/api/compliance")
 @Tag(name = "Compliance Evaluation", description = "Compliance evaluation and logging endpoints")
 public class ComplianceEvaluationController {
-
+    
     private final ComplianceEvaluationService evaluationService;
-
+    
     public ComplianceEvaluationController(ComplianceEvaluationService evaluationService) {
         this.evaluationService = evaluationService;
     }
-
+    
     @PostMapping("/evaluate/{readingId}")
     @Operation(summary = "Evaluate a reading", description = "Evaluate a sensor reading against compliance thresholds")
     public ResponseEntity<ComplianceLog> evaluateReading(
@@ -28,7 +28,7 @@ public class ComplianceEvaluationController {
         ComplianceLog log = evaluationService.evaluateReading(readingId);
         return ResponseEntity.ok(log);
     }
-
+    
     @GetMapping("/reading/{readingId}")
     @Operation(summary = "Get logs by reading", description = "Retrieve all compliance logs for a specific reading")
     public ResponseEntity<List<ComplianceLog>> getLogsByReading(
@@ -36,7 +36,7 @@ public class ComplianceEvaluationController {
         List<ComplianceLog> logs = evaluationService.getLogsByReading(readingId);
         return ResponseEntity.ok(logs);
     }
-
+    
     @GetMapping("/{id}")
     @Operation(summary = "Get log by ID", description = "Retrieve a specific compliance log by its ID")
     public ResponseEntity<ComplianceLog> getLog(
