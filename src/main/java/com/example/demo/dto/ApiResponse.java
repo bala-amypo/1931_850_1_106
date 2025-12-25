@@ -1,28 +1,25 @@
 package com.example.demo.dto;
 
-public class ApiResponse<T> {
+public class ApiResponse {
+
     private boolean success;
     private String message;
-    private T data;
+    private Object data;
 
-    // No-arg constructor
     public ApiResponse() {
     }
 
-    // Constructor with success and message
     public ApiResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
     }
 
-    // Full constructor
-    public ApiResponse(boolean success, String message, T data) {
+    public ApiResponse(boolean success, String message, Object data) {
         this.success = success;
         this.message = message;
         this.data = data;
     }
 
-    // Getters and Setters
     public boolean isSuccess() {
         return success;
     }
@@ -39,11 +36,11 @@ public class ApiResponse<T> {
         this.message = message;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

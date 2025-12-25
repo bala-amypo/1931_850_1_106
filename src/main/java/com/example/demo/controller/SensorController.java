@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
 import com.example.demo.entity.Sensor;
 import com.example.demo.service.SensorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,28 +21,27 @@ public class SensorController {
         this.sensorService = sensorService;
     }
 
-    @PostMapping
-    @Operation(summary = "Create sensor", description = "Creates a new water quality sensor")
-    public ResponseEntity<ApiResponse<Sensor>> createSensor(@RequestBody Sensor sensor) {
-        Sensor createdSensor = sensorService.createSensor(sensor);
-        ApiResponse<Sensor> response = new ApiResponse<>(true, "Sensor created successfully", createdSensor);
-        return ResponseEntity.ok(response);
+    @PostMapping("/{locationId}")
+    @Operation(summary = "Create a new sensor", description = "Add a new sensor to a specific location")
+    public ResponseEntity<Sensor> createSensor(
+            @Parameter(description = "Location ID") @PathVariable Long locationId,
+            @RequestBody Sensor sensor) {
+        Sensor savedSensor = sensorService.createSensor(locationId, sensor);
+        return ResponseEntity.ok(savedSensor);
     }
 
     @GetMapping
-    @Operation(summary = "Get all sensors", description = "Retrieves all sensors")
-    public ResponseEntity<ApiResponse<List<Sensor>>> getAllSensors() {
+    @Operation(summary = "Get all sensors", description = "Retrieve a list of all sensors")
+    public ResponseEntity<List<Sensor>> getAllSensors() {
         List<Sensor> sensors = sensorService.getAllSensors();
-        ApiResponse<List<Sensor>> response = new ApiResponse<>(true, "Sensors retrieved successfully", sensors);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(sensors);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get sensor by ID", description = "Retrieves a specific sensor by its ID")
-    public ResponseEntity<ApiResponse<Sensor>> getSensor(
+    @Operation(summary = "Get sensor by ID", description = "Retrieve a specific sensor by its ID")
+    public ResponseEntity<Sensor> getSensor(
             @Parameter(description = "Sensor ID") @PathVariable Long id) {
         Sensor sensor = sensorService.getSensor(id);
-        ApiResponse<Sensor> response = new ApiResponse<>(true, "Sensor retrieved successfully", sensor);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(sensor);
     }
 }
