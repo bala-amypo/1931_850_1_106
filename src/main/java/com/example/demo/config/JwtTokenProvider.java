@@ -1,16 +1,23 @@
+cd ~/Workspace/demo/src/main/java/com/example/demo/config
+cat > JwtTokenProvider.java << 'EOF'
 package com.example.demo.config;
 
 import com.example.demo.entity.Role;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 public class JwtTokenProvider {
 
-    private final String secret;
+    private final SecretKey secretKey;
     private final long validityInMs;
 
     public JwtTokenProvider(String secret, long validityInMs) {
-        this.secret = secret;
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.validityInMs = validityInMs;
     }
 
@@ -24,7 +31,7 @@ public class JwtTokenProvider {
                 .claim("role", role.name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -32,15 +39,17 @@ public class JwtTokenProvider {
         try {
             getClaims(token);
             return true;
-        } catch (JwtException | IllegalArgumentException ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 }
+EOF
