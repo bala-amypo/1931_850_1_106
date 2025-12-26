@@ -1,13 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.ComplianceLog;
+import com.example.demo.entity.SensorReading;
 
-import java.util.List;
-
-public interface ComplianceEvaluationService {
-    ComplianceLog evaluateReading(Long readingId);
-
-    List<ComplianceLog> getLogsByReading(Long readingId);
-
-    ComplianceLog getLog(Long id);
+public interface SensorReadingService {
+    SensorReading submitReading(Long sensorId, SensorReading reading);
+    SensorReading getReading(Long id);
 }
