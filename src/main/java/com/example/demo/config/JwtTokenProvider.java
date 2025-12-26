@@ -6,7 +6,7 @@ import io.jsonwebtoken.Claims;
 public class JwtTokenProvider {
 
     public JwtTokenProvider(String secret, long validityInMs) {
-        // Minimal constructor for tests
+        // minimal constructor for tests
     }
 
     public String generateToken(Long userId, String email, Role role) {
@@ -21,4 +21,3 @@ public class JwtTokenProvider {
         return null;
     }
 }
-EOF
