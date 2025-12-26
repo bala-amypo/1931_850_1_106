@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class ComplianceThreshold {
     @Id
@@ -12,8 +14,9 @@ public class ComplianceThreshold {
     private Double minValue;
     private Double maxValue;
     private String severityLevel;
+    private LocalDateTime createdAt;
 
-    // getters and setters
+    // getters and setters ...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -28,4 +31,7 @@ public class ComplianceThreshold {
 
     public String getSeverityLevel() { return severityLevel; }
     public void setSeverityLevel(String severityLevel) { this.severityLevel = severityLevel; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

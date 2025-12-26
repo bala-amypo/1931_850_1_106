@@ -1,7 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class SensorReading {
@@ -16,7 +19,10 @@ public class SensorReading {
 
     private LocalDateTime readingTime;
 
-    private String status; // PENDING, SAFE, UNSAFE
+    private String status;
+
+    @OneToMany(mappedBy = "sensorReading")
+    private List<ComplianceLog> complianceLogs = new ArrayList<>();
 
     // getters and setters
     public Long getId() { return id; }
@@ -33,4 +39,7 @@ public class SensorReading {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public List<ComplianceLog> getComplianceLogs() { return complianceLogs; }
+    public void setComplianceLogs(List<ComplianceLog> complianceLogs) { this.complianceLogs = complianceLogs; }
 }
