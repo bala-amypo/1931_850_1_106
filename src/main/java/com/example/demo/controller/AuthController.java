@@ -1,51 +1,55 @@
-// package com.example.demo.controller;
+package com.example.demo.controller;
 
-// import com.example.demo.dto.ApiResponse;
-// import com.example.demo.dto.AuthRequest;
-// import com.example.demo.dto.AuthResponse;
-// import com.example.demo.entity.User;
-// import com.example.demo.security.JwtTokenProvider;
-// import com.example.demo.service.UserService;
-// import io.swagger.v3.oas.annotations.Operation;
-// import io.swagger.v3.oas.annotations.tags.Tag;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.web.bind.annotation.*;
+import com.example.demo.config.JwtTokenProvider;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.entity.Role;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping("/auth")
-// @Tag(name = "Authentication", description = "User authentication and registration endpoints")
-// public class AuthController {
+@RestController
+@RequestMapping("/auth")
+@Tag(name = "Authentication", description = "User registration and authentication endpoints")
+public class AuthController {
 
-//     private final UserService userService;
-//     private final JwtTokenProvider jwtTokenProvider;
-//     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final JwtTokenProvider jwtTokenProvider =
+            new JwtTokenProvider("VerySecretKeyForJWTsChangeMeVerySecretKeyForJWTsChangeMe", 3600000);
 
-//     public AuthController(UserService userService, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
-//         this.userService = userService;
-//         this.jwtTokenProvider = jwtTokenProvider;
-//         this.passwordEncoder = passwordEncoder;
-//     }
+    public AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-//     @PostMapping("/register")
-//     @Operation(summary = "Register a new user", description = "Create a new user account with email and password")
-//     public ResponseEntity<ApiResponse> register(@RequestBody User user) {
-//         User savedUser = userService.register(user);
-//         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully", savedUser));
-//     }
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
+        return userRepository.save(user);
+    }
 
-//     @PostMapping("/login")
-//     @Operation(summary = "Login user", description = "Authenticate user and return JWT token")
-//     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-//         User user = userService.findByEmail(request.getEmail());
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody AuthRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-//         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-//             throw new IllegalArgumentException("Invalid credentials");
-//         }
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
-//         String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
+        String token = jwtTokenProvider.generateToken(
+                user.getId(), user.getEmail(), user.getRole()
+        );
+        return new AuthResponse(token);
+    }
 
-//         AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
-//         return ResponseEntity.ok(response);
-//     }
-// }
+    @DeleteMapping("/user/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
+    }
+}
