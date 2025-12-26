@@ -9,6 +9,7 @@ import com.example.demo.repository.SensorReadingRepository;
 import com.example.demo.service.ComplianceEvaluationService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -49,7 +50,11 @@ public class ComplianceEvaluationServiceImpl implements ComplianceEvaluationServ
 
         ComplianceLog log = new ComplianceLog();
         log.setSensorReading(reading);
+        log.setThresholdUsed(threshold);
         log.setStatusAssigned(status);
+        log.setRemarks("Evaluated automatically");
+        log.setLoggedAt(LocalDateTime.now());
+
         return logRepository.save(log);
     }
 }

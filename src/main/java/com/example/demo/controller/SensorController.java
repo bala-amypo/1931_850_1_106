@@ -29,6 +29,10 @@ public class SensorController {
         Location loc = locationRepository.findById(locationId)
                 .orElseThrow(() -> new RuntimeException("Location not found"));
         sensor.setLocation(loc);
+
+        // set installation timestamp
+        sensor.setInstalledAt(java.time.LocalDateTime.now());
+
         return sensorRepository.save(sensor);
     }
 
