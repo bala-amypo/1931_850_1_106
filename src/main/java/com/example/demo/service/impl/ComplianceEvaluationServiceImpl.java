@@ -1,7 +1,11 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.ComplianceLog;
+import com.example.demo.entity.ComplianceThreshold;
+import com.example.demo.entity.SensorReading;
+import com.example.demo.repository.ComplianceLogRepository;
+import com.example.demo.repository.ComplianceThresholdRepository;
+import com.example.demo.repository.SensorReadingRepository;
 import com.example.demo.service.ComplianceEvaluationService;
 import org.springframework.stereotype.Service;
 
