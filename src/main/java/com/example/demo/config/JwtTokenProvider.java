@@ -41,6 +41,7 @@ public class JwtTokenProvider {
     }
 
     public Claims getClaims(String token) {
+        // FIXED: Use parser() for your jjwt version (not parserBuilder())
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
