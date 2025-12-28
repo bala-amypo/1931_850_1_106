@@ -16,7 +16,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // Fallback for everything else (including RuntimeException "not found")
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
         ApiResponse response = new ApiResponse(false, "An error occurred: " + ex.getMessage());
