@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle bad input
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
         ApiResponse response = new ApiResponse(false, ex.getMessage());
