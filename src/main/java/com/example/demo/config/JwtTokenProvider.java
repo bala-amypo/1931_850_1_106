@@ -3,9 +3,9 @@ package com.example.demo.config;
 import com.example.demo.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
+import java.util.Base64;
 
 public class JwtTokenProvider {
 
@@ -13,7 +13,7 @@ public class JwtTokenProvider {
     private final long validityInMs;
 
     public JwtTokenProvider(String secret, long validityInMs) {
-        this.secret = secret;
+        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
         this.validityInMs = validityInMs;
     }
 
@@ -27,7 +27,7 @@ public class JwtTokenProvider {
                 .claim("role", role.name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(io.jsonwebtoken.SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -41,7 +41,6 @@ public class JwtTokenProvider {
     }
 
     public Claims getClaims(String token) {
-        // FIXED: Use parser() for your jjwt version (not parserBuilder())
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
